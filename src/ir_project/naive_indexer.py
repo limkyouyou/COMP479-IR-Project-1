@@ -11,7 +11,7 @@ def generate_term_doc_pairs(
     doc_id: int,
     tokens: list[str],
 ) -> list[TermDocPair]:
-    """Generate (term, docID) pair for one document."""
+    """Generate (term, docID) pairs for one document."""
 
     terms = preprocess_tokens(tokens)
 
