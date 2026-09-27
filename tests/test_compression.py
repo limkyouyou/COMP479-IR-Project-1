@@ -1,4 +1,12 @@
-from ir_project.compression import rank_stop_words, select_stop_words
+from ir_project.compression import (
+    case_fold,
+    rank_stop_words,
+    remove_numbers,
+    remove_punctuation,
+    remove_stop_words,
+    select_stop_words,
+    stem_tokens,
+)
 
 
 def test_rank_stop_words_by_frequency():
@@ -56,3 +64,82 @@ def test_smaller_stop_list_is_subset_of_larger():
     stop_4 = select_stop_words(ranked_stop_words, 4)
 
     assert stop_2.issubset(stop_4)
+
+
+def test_remove_punctuation():
+    tokens = [
+        "Oil",
+        ",",
+        "market",
+        ".",
+        "--",
+        "trade",
+    ]
+
+    result = remove_punctuation(tokens)
+
+    assert result == ["Oil", "market", "trade"]
+
+
+def test_remove_numbers():
+    tokens = [
+        "oil",
+        "1987",
+        "market",
+        "100",
+        "g7",
+    ]
+
+    result = remove_numbers(tokens)
+
+    assert result == ["oil", "market", "g7"]
+
+
+def test_case_fold():
+    tokens = [
+        "OIL",
+        "Market",
+        "TrAdE",
+    ]
+
+    result = case_fold(tokens)
+
+    assert result == ["oil", "market", "trade"]
+
+
+def test_remove_stop_words():
+    tokens = [
+        "the",
+        "oil",
+        "and",
+        "market",
+        "of",
+        "trade",
+    ]
+    stop_words = {
+        "the",
+        "and",
+        "of",
+    }
+
+    result = remove_stop_words(tokens, stop_words)
+
+    assert result == ["oil", "market", "trade"]
+
+
+def test_stem_tokens():
+    tokens = [
+        "markets",
+        "marketing",
+        "connected",
+        "connections",
+    ]
+
+    result = stem_tokens(tokens)
+
+    assert result == [
+        "market",
+        "market",
+        "connect",
+        "connect",
+    ]
