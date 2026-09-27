@@ -1,5 +1,41 @@
+from nltk.tokenize import WordPunctTokenizer
+
 from ir_project.naive_indexer import InvertedIndex
 from ir_project.preprocessing import preprocess_tokens
+
+
+_query_tokenizer = WordPunctTokenizer()
+
+
+def parse_query(
+    query: str,
+) -> list[str]:
+    """Tokenize and normalized a raw query string."""
+
+    tokens = _query_tokenizer.tokenize(query)
+
+    tokens = [token for token in tokens if token != "AND"]
+
+    return preprocess_tokens(tokens)
+
+
+def process_query(
+    index: InvertedIndex,
+    query: str,
+) -> list[int]:
+    """Process a raw single-term or AND query."""
+
+    terms = parse_query(query)
+
+    if not terms:
+        return []
+
+    if len(terms) == 1:
+        return single_term_query(index, terms[0])
+
+    return and_query(index, terms)
+
+    
 
 
 def single_term_query(

@@ -1,6 +1,8 @@
 from ir_project.query_processor import (
     and_query,
     intersect_postings,
+    parse_query,
+    process_query,
     single_term_query,
 )
 
@@ -55,3 +57,39 @@ def test_and_query_missing_term():
     result = and_query(TEST_INDEX, ["rain", "sun"])
 
     assert result == []
+
+
+def test_parse_query_single_term():
+    result = parse_query("RAIN")
+
+    assert result == ["rain"]
+
+
+def test_parse_query_and_query():
+    result = parse_query("rain AND shadow")
+
+    assert result == ["rain", "shadow"]
+
+
+def test_parse_query_normalizes_case():
+    result = parse_query("RAIN AND SHADOW")
+
+    assert result == ["rain", "shadow"]
+
+
+def test_parse_query_contraction():
+    result = parse_query("can't")
+
+    assert result == ["can", "t"]
+
+
+def test_process_query_single_term():
+    result = process_query(TEST_INDEX, "RAIN")
+
+    assert result == [10, 20, 30, 40]
+
+
+def test_process_query_and_query():
+    result = process_query(TEST_INDEX, "rain AND shadow")
+
+    assert result == [10, 30, 40]
