@@ -17,3 +17,6 @@ Thumbs.db
 
 # Reuters-21578 dataset
 data/reuters21578/
+
+# Tokenization rule set
+tokenization_rule.txt
