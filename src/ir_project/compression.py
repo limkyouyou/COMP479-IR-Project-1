@@ -90,3 +90,77 @@ def select_stop_words(
     """Select the requested number of highest-frequency stop words."""
 
     return {term for term, _ in ranked_stop_words[:count]}
+
+
+def compute_index_statistics(
+    documents: Iterable[Document],
+) -> tuple[int, int]:
+    """
+    Return the number of distinct terms and nonpositional postings.
+
+    Each document is expected to already contain the tokens for the preprocessing stage being measured.
+    """
+
+    index: dict[str, set[int]] = {}
+
+    for doc_id, tokens in documents:
+        for term in tokens:
+            if term not in index:
+                index[term] = set()
+
+            index[term].add(doc_id)
+
+    distinc_terms = len(index)
+    postings = sum(len(doc_ids) for doc_ids in index.values())
+
+    return distinc_terms, postings
+
+
+def process_unfiltered(
+    tokens: list[str],
+) -> list[str]:
+    """Prepare tokens for the unfiltered experimental baseline."""
+
+    return remove_punctuation(tokens)
+
+
+def process_no_numbers(
+    tokens: list[str],
+) -> list[str]:
+    """Remove punctuation and numeric terms."""
+
+    tokens = remove_punctuation(tokens)
+
+    return remove_numbers(tokens)
+
+
+def process_case_folded(
+    tokens: list[str],
+) -> list[str]:
+    """Remove punctuation and numbers, then case fold."""
+
+    tokens = process_no_numbers(tokens)
+
+    return case_fold(tokens)
+
+
+def process_with_stop_words_removed(
+    tokens: list[str],
+    stop_words: set[str],
+) -> list[str]:
+    """Apply case folding and remove the supplied stop words."""
+
+    tokens = process_case_folded(tokens)
+
+    return remove_stop_words(tokens, stop_words)
+
+
+def process_stemmed(
+    tokens: list[str],
+    stop_words: set[str],
+) -> list[str]:
+    """Apply preprocessing, stop-word removal, and stemming."""
+
+    tokens = process_with_stop_words_removed(tokens, stop_words)
+
+    return stem_tokens(tokens)
