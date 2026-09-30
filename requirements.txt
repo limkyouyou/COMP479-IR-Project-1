@@ -1,2 +1,3 @@
 nltk==3.10.3
 pytest==9.1.1
+beautifulsoup==4.15.0
