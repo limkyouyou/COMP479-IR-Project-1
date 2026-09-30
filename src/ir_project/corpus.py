@@ -4,6 +4,8 @@ import re
 
 from bs4 import BeautifulSoup, Tag
 
+from ir_project.tokenizer import tokenize_text
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATA_DIR = PROJECT_ROOT / "data" / "reuters21578"
@@ -54,7 +56,7 @@ def extract_document_text(document: Tag) -> str:
     return " ".join(parts).strip()
 
 
-def iter_raw_document(
+def iter_raw_documents(
     data_dir: Path = DEFAULT_DATA_DIR,
 ) -> Iterator[tuple[int, str]]:
     """Yield Reuters document as (NEWID, raw article text)."""
@@ -78,3 +80,14 @@ def iter_raw_document(
             text = extract_document_text(document)
 
             yield doc_id, text
+
+
+def iter_documents(
+    data_dir: Path = DEFAULT_DATA_DIR,
+) -> Iterator[tuple[int, list[str]]]:
+    """Yield Reuters documents as (NEWID, tokens) pairs."""
+
+    for doc_id, text in iter_raw_documents(data_dir):
+        tokens = tokenize_text(text)
+
+        yield doc_id, tokens

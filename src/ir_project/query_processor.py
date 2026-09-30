@@ -1,10 +1,6 @@
-from nltk.tokenize import WordPunctTokenizer
-
 from ir_project.naive_indexer import InvertedIndex
 from ir_project.preprocessing import preprocess_tokens
-
-
-_query_tokenizer = WordPunctTokenizer()
+from ir_project.tokenizer import tokenize_text
 
 
 def parse_query(
@@ -12,8 +8,9 @@ def parse_query(
 ) -> list[str]:
     """Tokenize and normalized a raw query string."""
 
-    tokens = _query_tokenizer.tokenize(query)
+    tokens = tokenize_text(query)
 
+    # Remove Boolean AND operator.
     tokens = [token for token in tokens if token != "AND"]
 
     return preprocess_tokens(tokens)

@@ -1,8 +1,8 @@
-from ir_project.corpus import iter_raw_document
+from ir_project.corpus import iter_raw_documents
 
 
 def main():
-    documents = list(iter_raw_document())
+    documents = list(iter_raw_documents())
 
     doc_ids = [doc_id for doc_id, _ in documents]
     unique_ids = set(doc_ids)

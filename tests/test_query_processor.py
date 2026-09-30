@@ -80,7 +80,7 @@ def test_parse_query_normalizes_case():
 def test_parse_query_contraction():
     result = parse_query("can't")
 
-    assert result == ["can", "t"]
+    assert result == ["can't"]
 
 
 def test_process_query_single_term():
@@ -93,3 +93,21 @@ def test_process_query_and_query():
     result = process_query(TEST_INDEX, "rain AND shadow")
 
     assert result == [10, 30, 40]
+
+
+def test_parse_query_abbreviation():
+    result = parse_query("U.S.")
+
+    assert result == ["u.s."]
+
+
+def test_parse_query_hyphenated_term():
+    result = parse_query("oil-price")
+
+    assert result == ["oil", "price"]
+
+
+def test_parse_query_decimal():
+    result = parse_query("1,850.50")
+
+    assert result == ["1850.50"]

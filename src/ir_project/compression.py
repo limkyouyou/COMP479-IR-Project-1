@@ -1,6 +1,8 @@
 from collections import Counter
 from collections.abc import Iterable
 
+import re
+
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
@@ -8,23 +10,26 @@ from nltk.stem import PorterStemmer
 Document = tuple[int, list[str]]
 
 
+NUMBER_PATTERN = re.compile(r"\d+(?:\.\d+)?$")
+
+
 _stemmer = PorterStemmer()
 
 
-def remove_punctuation(
-    tokens: list[str],
-) -> list[str]:
-    """Remove tokens that contain no alphanumeric characters."""
+def is_number_token(
+    token: str,
+) -> bool:
+    """Return True if the token represents an integer or decimal number."""
 
-    return [token for token in tokens if any(char.isalnum() for char in token)]
+    return NUMBER_PATTERN.fullmatch(token) is not None
 
 
 def remove_numbers(
     tokens: list[str],
 ) -> list[str]:
-    """Remove tokens consisting entirely of digits."""
+    """Remove integer and decimal numeric tokens."""
 
-    return [token for token in tokens if not token.isdigit()]
+    return [token for token in tokens if not is_number_token(token)]
 
 
 def case_fold(
@@ -119,17 +124,15 @@ def compute_index_statistics(
 def process_unfiltered(
     tokens: list[str],
 ) -> list[str]:
-    """Prepare tokens for the unfiltered experimental baseline."""
+    """Return the tokenized corpus without lossy compression."""
 
-    return remove_punctuation(tokens)
+    return list(tokens)
 
 
 def process_no_numbers(
     tokens: list[str],
 ) -> list[str]:
-    """Remove punctuation and numeric terms."""
-
-    tokens = remove_punctuation(tokens)
+    """Remove numeric terms."""
 
     return remove_numbers(tokens)
 
@@ -137,7 +140,7 @@ def process_no_numbers(
 def process_case_folded(
     tokens: list[str],
 ) -> list[str]:
-    """Remove punctuation and numbers, then case fold."""
+    """Remove numbers and case fold."""
 
     tokens = process_no_numbers(tokens)
 

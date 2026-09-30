@@ -1,7 +1,11 @@
+from pathlib import Path
+
 from bs4 import BeautifulSoup
 
 from ir_project.corpus import (
     extract_document_text,
+    iter_documents,
+    iter_raw_documents,
     remove_reuters_footer,
 )
 
@@ -73,3 +77,33 @@ def test_extract_unprocessed_document():
 
     assert "FEDERAL RESERVE WEEKLY REPORT" in result
     assert "Bank borrowings increased." in result
+
+
+def test_iter_raw_documents_reads_reuters_files():
+    documents = iter_raw_documents()
+
+    doc_id, text = next(documents)
+
+    assert doc_id == 1
+    assert isinstance(text, str)
+    assert len(text) > 0
+
+
+def test_iter_documents_tokenizes_text():
+    documents = iter_documents()
+
+    doc_id, tokens = next(documents)
+
+    assert doc_id == 1
+    assert isinstance(tokens, list)
+    assert len(tokens) > 0
+    assert all(isinstance(token, str) for token in tokens)
+
+
+def test_first_document_contains_expected_terms():
+    doc_id, tokens = next(iter_documents())
+
+    assert doc_id == 1
+    assert "BAHIA" in tokens
+    assert "COCOA" in tokens
+    assert "REVIEW" in tokens

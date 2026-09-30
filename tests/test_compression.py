@@ -1,8 +1,8 @@
 from ir_project.compression import (
     case_fold,
+    is_number_token,
     rank_stop_words,
     remove_numbers,
-    remove_punctuation,
     remove_stop_words,
     select_stop_words,
     stem_tokens,
@@ -66,27 +66,22 @@ def test_smaller_stop_list_is_subset_of_larger():
     assert stop_2.issubset(stop_4)
 
 
-def test_remove_punctuation():
-    tokens = [
-        "Oil",
-        ",",
-        "market",
-        ".",
-        "--",
-        "trade",
-    ]
+def test_is_number_token():
+    assert is_number_token("1987")
+    assert is_number_token("3.88")
+    assert is_number_token("1850.50")
 
-    result = remove_punctuation(tokens)
-
-    assert result == ["Oil", "market", "trade"]
+    assert not is_number_token("g7")
+    assert not is_number_token("u.s.")
 
 
 def test_remove_numbers():
     tokens = [
         "oil",
         "1987",
+        "3.88",
+        "1850.50",
         "market",
-        "100",
         "g7",
     ]
 

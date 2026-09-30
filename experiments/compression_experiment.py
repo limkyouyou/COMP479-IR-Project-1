@@ -22,19 +22,34 @@ def print_row(
     name: str,
     terms: str,
     postings: int,
+    reference_terms: int,
+    reference_postings: int,
     base_terms: int, 
     base_postings: int,
 ) -> None:
-    term_change = ((terms - base_terms) / base_terms) * 100
-    postings_change = ((postings - base_postings) / base_postings) * 100
+    term_delta = percent_change(terms, reference_terms)
+    term_total = percent_change(terms, base_terms)
+
+    postings_delta = percent_change(postings, reference_postings)
+    postings_total = percent_change(postings, base_postings)
 
     print(
         f"{name:<18}"
         f"{terms:>12,}"
-        f"{term_change:>10.2f}%"
+        f"{term_delta:>9.2f}%"
+        f"{term_total:>9.2f}%"
         f"{postings:>15,}"
-        f"{postings_change:>10.2f}%"
+        f"{postings_delta:>9.2f}%"
+        f"{postings_total:>9.2f}%"
     )
+
+
+def percent_change(
+    value: int,
+    reference: int,
+) -> float:
+
+    return ((value - reference) / reference) * 100
 
 
 def main():
@@ -82,28 +97,41 @@ def main():
     base_terms, base_postings = unfiltered
 
     print(
-        f"{'stage':<18}"
+        f"{'Stage':<18}"
         f"{'Terms':>12}"
-        f"{'Change':>10}"
+        f"{'Δ%':>10}"
+        f"{'T%':>10}"
         f"{'Postings':>15}"
-        f"{'Change':>10}"
+        f"{'Δ%':>10}"
+        f"{'T%':>10}"
     )
-    print("-" * 65)
+    print("-" * 85)
+
+    print(
+        f"{'Unfiltered':<18}"
+        f"{base_terms:>12,}"
+        f"{'—':>10}"
+        f"{'—':>10}"
+        f"{base_postings:>15,}"
+        f"{'—':>10}"
+        f"{'—':>10}"
+    )
 
     stages = [
-        ("Unfiltered", unfiltered),
-        ("No numbers", no_numbers),
-        ("Case folding", case_folded),
-        ("30 stop words", stop_30_stats),
-        ("150 stop words", stop_150_stats),
-        ("Stemming", stemmed),
+        ("No numbers", no_numbers, unfiltered),
+        ("Case folding", case_folded, no_numbers),
+        ("30 stop words", stop_30_stats, case_folded),
+        ("150 stop words", stop_150_stats, case_folded),
+        ("Stemming", stemmed, stop_150_stats),
     ]
 
-    for name, (terms, postings) in stages:
+    for name, (terms, postings), (ref_terms, ref_postings) in stages:
         print_row(
             name,
             terms,
             postings,
+            ref_terms,
+            ref_postings,
             base_terms,
             base_postings,
         )

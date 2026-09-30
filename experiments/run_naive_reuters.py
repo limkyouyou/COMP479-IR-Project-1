@@ -1,24 +1,32 @@
 from time import perf_counter
 
-from nltk.corpus import reuters
-
 from ir_project.corpus import iter_documents
 from ir_project.naive_indexer import build_naive_index
 
 
 def main():
-    print(f"Reuters documents: {len(reuters.fileids())}")
+
+    document_count = 0
+
+    def counted_documents():
+        nonlocal document_count
+
+        for document in iter_documents():
+            document_count += 1
+            yield document
 
     start = perf_counter()
 
-    index = build_naive_index(iter_documents())
+    index = build_naive_index(counted_documents())
 
     elapsed = perf_counter() - start
 
+    #validate every postins list.
     for postings in index.values():
         assert postings == sorted(set(postings))
 
-    print(f"Unique terms: {len(index)}")
+    print(f"Reuters documents: {document_count:,}")
+    print(f"Unique terms: {len(index):,}")
     print(f"Build time: {elapsed:.4f} seconds")
 
     sample_terms = ["oil", "trade", "market"]
