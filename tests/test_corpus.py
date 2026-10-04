@@ -15,12 +15,25 @@ def make_document(sgml: str):
     return soup.find("reuters")
 
 
+def test_remove_reuters_footer_when_footer_is_only_text():
+    assert remove_reuters_footer("Reuter") == ""
+    assert remove_reuters_footer("Reuters") == ""
+
+
 def test_remove_reuters_footer():
     text = "Oil prices increased sharply today. Reuter"
 
     result = remove_reuters_footer(text)
 
     assert result == "Oil prices increased sharply today."
+
+
+def test_remove_reuters_footer_with_contorl_character():
+    text = "Oil prices increased.\n\n Reuter\n\x03"
+
+    result = remove_reuters_footer(text)
+
+    assert result == "Oil prices increased."
 
 
 def test_extract_normal_document():

@@ -10,13 +10,26 @@ from ir_project.tokenizer import tokenize_text
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATA_DIR = PROJECT_ROOT / "data" / "reuters21578"
 
-REUTERS_FOOTER = re.compile(r"\s+Reuters?\s*$", re.IGNORECASE)
-
 
 def remove_reuters_footer(text: str) -> str:
-    """Remove a trailing Reuter/Reuters wire-service footer."""
+    """Remove trailing Reuter/Reuters wire-service footers."""
 
-    return REUTERS_FOOTER.sub("", text).strip()
+    text = text.rstrip(" \t\r\n\x02\x03")
+
+    while True:
+        cleaned = re.sub(
+            r"(?:^|\s+)Reuters?$",
+            "",
+            text,
+            flags=re.IGNORECASE,
+        ).rstrip(" \t\r\n\x02\x03")
+
+        if cleaned == text:
+            break
+
+        text = cleaned
+
+    return text.strip()
 
 
 def extract_document_text(document: Tag) -> str:
@@ -35,7 +48,9 @@ def extract_document_text(document: Tag) -> str:
         if title is None:
             return ""
 
-        return title.get_text(" ", strip=True)
+        title_text = title.get_text(" ", strip=True)
+
+        return remove_reuters_footer(title_text)
 
     if text_type == "UNPROC":
         return text_element.get_text(" ", strip=True)

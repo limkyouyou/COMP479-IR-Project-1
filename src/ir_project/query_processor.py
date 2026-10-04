@@ -6,7 +6,7 @@ from ir_project.tokenizer import tokenize_text
 def parse_query(
     query: str,
 ) -> list[str]:
-    """Tokenize and normalized a raw query string."""
+    """Tokenize and normalize a raw query string."""
 
     tokens = tokenize_text(query)
 
@@ -31,8 +31,6 @@ def process_query(
         return single_term_query(index, terms[0])
 
     return and_query(index, terms)
-
-    
 
 
 def single_term_query(

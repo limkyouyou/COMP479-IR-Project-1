@@ -69,7 +69,7 @@ def rank_stop_words(
     """
     Rank NLTK English stop words by frequency in the corpus.
 
-    Terms with equal frequencies are ordered alphaetically to make the result deterministic.
+    Terms with equal frequencies are ordered alphabetically to make the result deterministic.
     """
 
     stop_words = get_english_stop_words()
@@ -115,10 +115,10 @@ def compute_index_statistics(
 
             index[term].add(doc_id)
 
-    distinc_terms = len(index)
+    distinct_terms = len(index)
     postings = sum(len(doc_ids) for doc_ids in index.values())
 
-    return distinc_terms, postings
+    return distinct_terms, postings
 
 
 def process_unfiltered(
@@ -167,3 +167,20 @@ def process_stemmed(
     tokens = process_with_stop_words_removed(tokens, stop_words)
 
     return stem_tokens(tokens)
+
+
+def build_index_from_documents(
+    documents: Iterable[Document],
+) -> dict[str, list[int]]:
+    """Build an inverted index from already processed documents."""
+
+    index: dict[str, set[int]] = {}
+
+    for doc_id, tokens in documents:
+        for term in tokens:
+            if term not in index:
+                index[term] = set()
+
+            index[term].add(doc_id)
+
+    return {term: sorted(doc_ids) for term, doc_ids in index.items()}

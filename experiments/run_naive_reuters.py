@@ -21,7 +21,7 @@ def main():
 
     elapsed = perf_counter() - start
 
-    #validate every postins list.
+    #validate every postings list.
     for postings in index.values():
         assert postings == sorted(set(postings))
 

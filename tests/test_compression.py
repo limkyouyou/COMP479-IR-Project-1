@@ -1,4 +1,5 @@
 from ir_project.compression import (
+    build_index_from_documents,
     case_fold,
     is_number_token,
     rank_stop_words,
@@ -138,3 +139,18 @@ def test_stem_tokens():
         "connect",
         "connect",
     ]
+
+
+def test_build_index_from_documents():
+    documents = [
+        (1, ["oil", "market", "oil"]),
+        (2, ["market", "trade"]),
+    ]
+
+    result = build_index_from_documents(documents)
+
+    assert result == {
+        "oil": [1],
+        "market": [1, 2],
+        "trade": [2],
+    }

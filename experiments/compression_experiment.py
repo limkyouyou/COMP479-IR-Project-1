@@ -12,7 +12,7 @@ from ir_project.corpus import iter_documents
 
 
 def transform_documents(transform):
-    """Yield Reuters documents afterappying a token transformation."""
+    """Yield Reuters documents after appying a token transformation."""
 
     for doc_id, tokens in iter_documents():
         yield doc_id, transform(tokens)
@@ -20,7 +20,7 @@ def transform_documents(transform):
 
 def print_row(
     name: str,
-    terms: str,
+    terms: int,
     postings: int,
     reference_terms: int,
     reference_postings: int,
