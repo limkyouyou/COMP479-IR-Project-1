@@ -56,7 +56,7 @@ def print_section(title: str) -> None:
 
 
 def collect_pairs(limit: int) -> list[tuple[str, int]]:
-    """Collect normalizes term-DocID pairings for the timing experiments."""
+    """Collect pnormalized term-DocID pairings for the timing experiments."""
     pairs: list[tuple[str, int]] = []
 
     for doc_id, tokens in iter_documents():
@@ -95,11 +95,11 @@ def build_spimi_from_pairs(pairs: list[tuple[str, int]]) -> dict[str, list[int]]
     return index
 
 
-def compressed_documents(stor_words: set[str]):
+def compressed_documents(stop_words: set[str]):
     """Yield reuters documents using the final compression rules."""
 
     for doc_id, tokens in iter_documents():
-        yield doc_id, process_stemmed(tokens, stor_words)
+        yield doc_id, process_stemmed(tokens, stop_words)
 
 
 def process_compressed_query(
@@ -117,7 +117,7 @@ def process_compressed_query(
 
 
 def transform_documents(transform):
-    """Yield Reuters documents after appying a token transformation."""
+    """Yield Reuters documents after applying a token transformation."""
 
     for doc_id, tokens in iter_documents():
         yield doc_id, transform(tokens)
@@ -162,7 +162,7 @@ def main():
     print("COMP 479 - Information Retrieval Project Demo")
     print("=" * 60)
 
-    # Subporject I - Naive Indexer
+    # Subproject I - Naive Indexer
     print_section("Subproject I - Naive Indexer")
 
     print("Building naive Reuters index...")
@@ -328,23 +328,36 @@ def main():
 
     # Subproject IV - SPIMI
     print_section("Subproject IV - SPIMI")
+
+    print("Building full Reuters-21578 SPIMI index...")
+
+    start = perf_counter()
+    full_spimi_index = build_spimi_index(iter_documents())
+    spimi_build_time = perf_counter() - start
+
+    print()
+    print(f"Naive unique terms: {len(naive_index):,}")
+    print(f"SPIMI unique terms: {len(full_spimi_index):,}")
+    print(f"SPIMI build time: {spimi_build_time:.4f} seconds")
+    print(f"Full indexes match: {naive_index == full_spimi_index}")
+
+    print()
     print(f"Collecting {PAIR_LIMIT:,} term-DocID pairings...")
     pairs = collect_pairs(PAIR_LIMIT)
-
     print(f"Pairings collected: {len(pairs):,}")
 
     naive_times = []
 
     for _ in range(REPEATS):
         naive_start = perf_counter()
-        naive_index = build_naive_from_pairs(pairs)
+        naive_pair_index = build_naive_from_pairs(pairs)
         naive_times.append(perf_counter() - naive_start)
 
     spimi_times = []
 
     for _ in range(REPEATS):
         spimi_start = perf_counter()
-        spimi_index = build_spimi_from_pairs(pairs)
+        spimi_pair_index = build_spimi_from_pairs(pairs)
         spimi_times.append(perf_counter() - spimi_start)
 
     naive_average = sum(naive_times) / REPEATS
@@ -355,7 +368,7 @@ def main():
     print(f"SPIMI average: {spimi_average:.6f} seconds")
 
     print()
-    print(f"Indexes match: {naive_index == spimi_index}")
+    print(f"Indexes match: {naive_pair_index == spimi_pair_index}")
 
     print()
     print("=" * 60)
