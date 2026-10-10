@@ -56,7 +56,7 @@ def print_section(title: str) -> None:
 
 
 def collect_pairs(limit: int) -> list[tuple[str, int]]:
-    """Collect pnormalized term-DocID pairings for the timing experiments."""
+    """Collect normalized term-DocID pairings for the timing experiments."""
     pairs: list[tuple[str, int]] = []
 
     for doc_id, tokens in iter_documents():
@@ -96,7 +96,7 @@ def build_spimi_from_pairs(pairs: list[tuple[str, int]]) -> dict[str, list[int]]
 
 
 def compressed_documents(stop_words: set[str]):
-    """Yield reuters documents using the final compression rules."""
+    """Yield Reuters documents using the final compression rules."""
 
     for doc_id, tokens in iter_documents():
         yield doc_id, process_stemmed(tokens, stop_words)
@@ -187,7 +187,7 @@ def main():
     print("Supported query examples:")
     print("  Single-term query: stock")
     print("  AND query:         stock AND market")
-    print("  EXIT demo:         exit query")
+    print("  Exit query:         exit query")
 
     while True:
         query = input("\nQuery: ").strip()

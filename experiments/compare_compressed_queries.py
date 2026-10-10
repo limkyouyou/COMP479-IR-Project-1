@@ -24,7 +24,7 @@ QUERIES = [
 
 
 def compressed_documents(stop_words: set[str]):
-    """Yield reuters documents using the final compression rules."""
+    """Yield Reuters documents using the final compression rules."""
 
     for doc_id, tokens in iter_documents():
         yield doc_id, process_stemmed(tokens, stop_words)
