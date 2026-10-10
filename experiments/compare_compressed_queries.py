@@ -14,12 +14,12 @@ from ir_project.query_processor import (
 
 
 QUERIES = [
-    "oil",
-    "trade",
+    "stock",
     "market",
-    "oil AND market",
-    "trade AND japan",
-    "bank AND dollar",
+    "exchange",
+    "stock AND market",
+    "share AND equity",
+    "portfolio AND trade",
 ]
 
 

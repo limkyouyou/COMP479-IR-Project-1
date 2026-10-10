@@ -4,15 +4,15 @@ from ir_project.query_processor import parse_query, process_query
 
 
 SINGLE_QUERIES = [
-    "oil",
-    "trade",
+    "stock",
     "market",
+    "exchange",
 ]
 
 AND_QUERIES = [
-    "oil AND market",
-    "trade AND japan",
-    "bank AND dollar",
+    "stock AND market",
+    "share AND equity",
+    "portfolio AND trade",
 ]
 
 

@@ -26,7 +26,7 @@ def main():
     print()
     print(f"Indexes match: {naive_index == spimi_index}")
 
-    sample_terms = ["oil", "trade", "market"]
+    sample_terms = ["stock", "market", "exchange"]
 
     for term in sample_terms:
         print()

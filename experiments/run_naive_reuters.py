@@ -29,7 +29,7 @@ def main():
     print(f"Unique terms: {len(index):,}")
     print(f"Build time: {elapsed:.4f} seconds")
 
-    sample_terms = ["oil", "trade", "market"]
+    sample_terms = ["stock", "market", "exchange"]
 
     for term in sample_terms:
         postings = index.get(term, [])
